@@ -1,0 +1,110 @@
+func main() int32 {
+    printf("Début des tests\n-----------\n\n");
+
+    printf("Tests do_while:\n\n");
+    test_do_while();
+
+    printf("Tests repeat:\n\n");
+    test_repeat();
+
+    return 0;
+}
+
+func test_do_while() {
+    mut bool test := true;
+    
+    printf("Do false:\n");
+    do {
+        test := true;
+    } while false;
+    
+    if !test {
+        printf("Do While doesn't work!\n");
+    }
+    else {
+        printf("Le test marche.\n");
+    }
+
+    printf("Executer avec i := 0 en l'incrementant jusqu'a 5\n");
+    mut int32 i := 0;
+    do {
+        i += 1;
+    }while i < 5;
+    printf("i vaut: ");
+    print_number(i);
+    printf("\n");
+    if i == 5 {
+        printf("Ca marche!\n");
+    }
+    else {
+        printf("Oh non :'(\n");
+    }
+}
+
+func test_repeat() {
+    mut int32 test := 0;
+    mut uint32 i := uint32(5);
+
+    repeat i {
+        printf("5\n");
+        test+=1;
+    }
+    
+    if test <= 4 {
+        printf("\nRepeat doesn't work!\n");
+    }
+    if test == 5 {
+        printf("\nRepeat marche (y)\n");
+    }
+
+    repeat (uint32(9) + uint32(3)) {
+        printf("47\n");
+        test+=1;
+    }
+    
+    printf("\nSi il y a 12 x 47, c'est all tiguidou!\n");
+
+    /*printf("Lui n'est pas sense marcher:\n");
+
+    repeat -5 {
+        printf("5\n");
+        test+=1;
+    }*/
+}
+
+// func errors() uint32 {
+//     print_number(true);
+//     const int32 a := 5;
+//     a := 6;
+//     if (3){}
+//     b := 123;
+//     const int8 a := int8(2);
+//     switch a {
+//         case b {}
+//     }
+//     return false;
+// }
+
+func mutate_array(mut []int32 array){
+    array[0] := 100;
+}
+
+func print_number(const float64 f) {
+	printf("n := %f\n", f);
+}
+
+func print_number(const int32 n) {
+    printf("n := %d\n", n);
+}
+
+func print_number(const uint32 n) {
+    printf("n := %d\n", n);
+}
+
+func print_string(const []uint8 s) {
+    printf("%s\n", s);
+}
+
+func returns_5() int32 {
+    return 5;
+}

@@ -1,0 +1,51 @@
+func main() int32 {
+    const int32 a := 1;
+    const int32 b := 3;
+    switch a+1 {
+        case 1 {
+            print_string("on ne devrait pas voir ce message\t(switch)");
+        }
+        case 2 {
+            print_string("le premier message\t\t\t(switch)");
+            const bool test := false;
+            switch test {
+                case true { print_string("on ne devrait pas voir ce message\t(switch)"); }
+                case false { print_string("le second message\t\t\t(switch)"); }
+            }
+            fallthrough;
+        }
+        case 3 {
+            if b > 0 {
+                print_string("le troisieme message\t\t\t(switch)");
+            }
+        }
+        case 4 {
+            print_string("on ne devrait pas voir ce message\t(switch)");
+        }
+        default {
+            print_string("on ne devrait pas voir ce message\t(switch)");
+        }
+    }
+    
+    fallthrough switch a+1 {
+        case 1 {
+            print_string("on ne devrait pas voir ce message\t(falltrough switch)");
+        }
+        case 2 {
+            print_string("le premier message\t\t\t(falltrough switch)");
+        }
+        case 3 {
+            print_string("le second message\t\t\t(falltrough switch)");
+            break;
+        }
+        case 4 {
+            print_string("on ne devrait pas voir ce message\t(switch)");
+        }
+    }
+    
+    return 0;
+}
+
+func print_string(const string s) {
+    printf("%s\n", s);
+}

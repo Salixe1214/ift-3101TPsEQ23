@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Ccash": {
+      "commandName": "Project",
+      "commandLineArgs": "test_files/quicksort.ccash",
+      "workingDirectory": "$(SolutionDir)Ccash\\"
+    }
+  }
+}

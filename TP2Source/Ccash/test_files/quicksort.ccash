@@ -1,0 +1,41 @@
+func partition(mut []int32 arr, const uint32 low, const uint32 high) uint32 {
+    const int32 pivot := arr[high];
+    mut uint32 i := low - uint32(1);
+    
+    for mut uint32 j := low; j <= high - uint32(1); j++ {
+        if arr[j] < pivot {
+            i++;
+            arr[i] :=: arr[j];
+        }
+    }
+    
+    arr[i + uint32(1)] :=: arr[high];
+    return i + uint32(1);
+}
+
+func quicksort(mut []int32 arr, const uint32 low, const uint32 high) {
+    if low < high {
+        const uint32 pivot := partition(arr, low, high);
+        quicksort(arr, low, pivot - uint32(1));
+        quicksort(arr, pivot + uint32(1), high);
+    }
+}
+
+func printArray(const []int32 arr) {
+    printf("[");
+    // for const uint32 i in 0..arr.length { // Ranges are to be implemented...
+    for mut uint32 i := uint32(0); i < arr.length; i++ {
+        printf("%d, ", arr[i]);
+    }
+    printf("]\n");
+}
+
+func main() {
+    mut []int32 arr := [10, 7, 8, 9, 1, 5];
+    printf("Original array: ");
+    printArray(arr);
+    
+    quicksort(arr, uint32(0), arr.length);
+    printf("Sorted array: ");
+    printArray(arr);
+}
