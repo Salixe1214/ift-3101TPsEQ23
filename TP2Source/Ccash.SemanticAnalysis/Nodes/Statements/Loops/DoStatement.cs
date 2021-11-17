@@ -13,6 +13,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
     [SemanticRule("this.AlwaysReturns = false")]
     public class DoStatement : LoopStatement
     {
+        public bool breakV { get; }
         public DoStatement(DoStatementContext context, AbstractScope parent, InheritedAttributes inheritedAttributes) :
             base(parent)
         {
@@ -26,9 +27,9 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
             {
                 ErrorManager.MismatchedTypes(context.whileHeader(), CcashType.Boolean, ConditionExpression.Type);
             }
-
+            breakV = context.loopBlock().children.Count <= 5;
             var childrenAttributes = inheritedAttributes.WithConditionBlock(ConditionBlock).WithNextBlock(NextBlock);
-            Statements = context.block()
+            Statements = context.loopBlock()
                                 .statement()
                                 .Select(s => StatementFactory.Create(s, this, childrenAttributes))
                                 .ToList();

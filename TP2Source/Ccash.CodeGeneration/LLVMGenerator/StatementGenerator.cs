@@ -58,6 +58,10 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                     GenerateReturn(returnStatement, scope);
                     break;
 
+                case BreakStatement breakStatement:
+                    GenerateBreak(breakStatement, scope);
+                    break;
+
                 case IfStatement ifStatement:
                     GenerateIf(ifStatement);
                     break;
@@ -149,6 +153,11 @@ namespace Ccash.CodeGeneration.LLVMGenerator
             }
         }
 
+        private void GenerateBreak(BreakStatement breakStatement, AbstractScope scope)
+        {
+            
+        }
+
         private void GenerateVariableDeclaration(VariableDeclaration variableDeclaration, AbstractScope scope)
         {
             LLVMTypeRef type = TypeResolver.Resolve(variableDeclaration.Type);
@@ -180,7 +189,12 @@ namespace Ccash.CodeGeneration.LLVMGenerator
 
             Builder.PositionAtEnd(conditionExpressionBlock);
             LLVMValueRef condition = Builder.Expression(whileStatement.ConditionExpression, whileStatement.Parent);
-            Builder.ConditionalBranch(condition, loopBodyBlock, nextBlock);
+            if (whileStatement.breakV)
+            {
+                Builder.Branch(nextBlock);
+            }
+            else
+                Builder.ConditionalBranch(condition, loopBodyBlock, nextBlock);
 
             Builder.PositionAtEnd(loopBodyBlock);
             whileStatement.Statements.ForEach(s => Generate(s, whileStatement));
@@ -207,7 +221,12 @@ namespace Ccash.CodeGeneration.LLVMGenerator
 
             Builder.PositionAtEnd(conditionExpressionBlock);
             LLVMValueRef condition = Builder.Expression(doStatement.ConditionExpression, doStatement.Parent);
-            Builder.ConditionalBranch(condition, loopBodyBlock, nextBlock);
+            if (doStatement.breakV)
+            {
+                Builder.Branch(nextBlock);
+            }
+            else
+                Builder.ConditionalBranch(condition, loopBodyBlock, nextBlock);
 
             Builder.PositionAtEnd(loopBodyBlock);
             doStatement.Statements.ForEach(s => Generate(s, doStatement));
@@ -239,7 +258,12 @@ namespace Ccash.CodeGeneration.LLVMGenerator
 
             Builder.PositionAtEnd(conditionExpressionBlock);
             LLVMValueRef cond = Builder.Expression(forLoop.ConditionExpression, forLoop);
-            Builder.ConditionalBranch(cond, loopBodyBlock, nextBlock);
+            if (forLoop.breakV)
+            {
+                Builder.Branch(nextBlock);
+            }
+            else
+                Builder.ConditionalBranch(cond, loopBodyBlock, nextBlock);
 
             Builder.PositionAtEnd(loopBodyBlock);
             forLoop.Statements.ForEach(s => Generate(s, forLoop));
@@ -277,7 +301,12 @@ namespace Ccash.CodeGeneration.LLVMGenerator
             Builder.Branch(expressionBlock);
             Builder.PositionAtEnd(expressionBlock);
             LLVMValueRef cond = Builder.UnsignedGT(Builder.Load(valRef1), zero);
-            Builder.ConditionalBranch(cond, loopBodyBlock, nextBlock);
+            if (repeatLoop.breakV)
+            {
+                Builder.Branch(nextBlock);
+            }
+            else
+                Builder.ConditionalBranch(cond, loopBodyBlock, nextBlock);
 
             Builder.PositionAtEnd(loopBodyBlock);
 

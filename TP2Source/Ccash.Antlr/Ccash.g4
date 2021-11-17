@@ -90,7 +90,8 @@ statement
     | doStatement                                           # LoopStatement
     | forStatement                                          # LoopStatement
     | repeatStatement                                       # LoopStatement
-    | returnStatement                                       # ControlFlowStatement;
+    | returnStatement                                       # ControlFlowStatement
+    | breakStatement                                        # ControlFlowStatement;
 
 block : '{' statement* '}';
 
@@ -108,20 +109,24 @@ reassignment
     | expression ('+='|'-='|'/='|'*=') expression
     | expression ('%='|'&='|'^='|'|=') expression
     | expression ('--' | '++');
+
+breakStatement : 'break;';
+
+loopBlock : '{' statement* breakStatement? statement* '}';
     
 whileHeader : 'while' expression;
 
-whileStatement : whileHeader block;
+whileStatement : whileHeader loopBlock;
 
-doStatement : 'do' block whileHeader ';';
+doStatement : 'do' loopBlock whileHeader ';';
 
 forHeader : 'for' forInitialization? ';' expression? ';' forUpdate?;
 
-forStatement : forHeader block; 
+forStatement : forHeader loopBlock; 
 
 repeatHeader : 'repeat' expression;
 
-repeatStatement : repeatHeader block;
+repeatStatement : repeatHeader loopBlock;
 
 forInitialization
     : functionCall

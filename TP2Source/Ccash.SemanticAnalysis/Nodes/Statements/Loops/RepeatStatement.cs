@@ -17,6 +17,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
         public IStatement Declaration { get; }
 
         public IStatement Assignment { get; }
+
+        public bool breakV { get; }
         public RepeatStatement(RepeatStatementContext context, AbstractScope parent, InheritedAttributes inheritedAttributes) :
             base(parent)
         {
@@ -31,9 +33,10 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
             {
                 ErrorManager.MismatchedTypes(context.repeatHeader(), CcashType.Uint64, ConditionExpression.Type);
             }
+            breakV = context.loopBlock().children.Count == 5;
 
             var childrenAttributes = inheritedAttributes.WithConditionBlock(ConditionBlock).WithNextBlock(NextBlock);
-            Statements = context.block()
+            Statements = context.loopBlock()
                                 .statement()
                                 .Select(s => StatementFactory.Create(s, this, childrenAttributes))
                                 .ToList();

@@ -86,6 +86,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             {
                 return new RepeatStatement(context.repeatStatement(), scope, inheritedAttributes);
             }
+            
 
             throw new NotImplementedException($"{context.GetType()} is not yet implemented");
         }
@@ -97,6 +98,10 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             if (context.returnStatement() != null)
             {
                 return new ReturnStatement(context.returnStatement(), scope);
+            }
+            if (context.breakStatement() != null)
+            {
+                return new BreakStatement(context.breakStatement(), scope);
             }
 
             throw new NotImplementedException($"{context.GetType()} is not yet implemented");
