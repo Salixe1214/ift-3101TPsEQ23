@@ -155,22 +155,28 @@ namespace Ccash.CodeGeneration.LLVMGenerator
 
         private void GenerateBreak(BreakStatement breakStatement, AbstractScope scope)
         {
-            LoopStatement parent = scope.Enclosing<LoopStatement>().Last();
+            var parent = scope.Enclosing<LoopStatement>().First();
+            LLVMBasicBlockRef nextBlock = (LLVMBasicBlockRef) parent.NextBlock.Data;
             LLVMBasicBlockRef condBlock = (LLVMBasicBlockRef) parent.ConditionBlock.Data;
-            LLVMBasicBlockRef nextBlock = (LLVMBasicBlockRef)parent.NextBlock.Data;
-            Console.WriteLine("Block: ");
+            LLVMBasicBlockRef bodyBlock = (LLVMBasicBlockRef) parent.BodyBlock.Data;
+            Console.WriteLine("NextBlock: ");
             Console.WriteLine(nextBlock);
+            Console.WriteLine("CondBlock: ");
+            Console.WriteLine(condBlock);
+            Console.WriteLine("bodyBlock: ");
+            Console.WriteLine(bodyBlock);
 
+            Builder.Branch(bodyBlock);
+
+            Builder.PositionAtEnd(condBlock);
             Builder.Branch(nextBlock);
-            Builder.PositionAtEnd(nextBlock);
-            Builder.Branch(nextBlock);
-            Builder.PositionAtEnd(nextBlock);
-            Console.WriteLine("Block: ");
-            Console.WriteLine(nextBlock);
-            if (!Builder.CurrentBlock.HasTerminator())
+
+            Builder.PositionAtEnd(bodyBlock);
+            if (!bodyBlock.HasTerminator())
             {
-                Builder.Branch(nextBlock);
+                Builder.Branch(condBlock);
             }
+
             Builder.PositionAtEnd(nextBlock);
         }
 
@@ -226,6 +232,7 @@ namespace Ccash.CodeGeneration.LLVMGenerator
 
             doStatement.ConditionBlock.Data = conditionExpressionBlock;
             doStatement.NextBlock.Data = nextBlock;
+            doStatement.BodyBlock.Data = loopBodyBlock;
 
             Builder.Branch(loopBodyBlock);
 
@@ -240,8 +247,12 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                 Builder.Branch(conditionExpressionBlock);
             }
 
-            doStatement.NextBlock.Block = nextBlock;
             Builder.PositionAtEnd(nextBlock);
+
+
+            doStatement.ConditionBlock.Data = conditionExpressionBlock;
+            doStatement.NextBlock.Data = nextBlock;
+            doStatement.BodyBlock.Data = loopBodyBlock;
         }
 
         private void GenerateFor(ForLoopStatement forLoop)
@@ -317,8 +328,6 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                 Builder.Branch(expressionBlock);
             }
 
-
-            repeatLoop.NextBlock.Block = nextBlock;
             Builder.PositionAtEnd(nextBlock);
 
         }
