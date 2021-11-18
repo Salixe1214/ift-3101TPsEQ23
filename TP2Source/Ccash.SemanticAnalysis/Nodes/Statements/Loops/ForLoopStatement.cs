@@ -20,8 +20,6 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
 
         public IStatement Assignment { get; }
 
-        public bool breakV { get; }
-
         public ForLoopStatement(ForStatementContext context, AbstractScope parent, InheritedAttributes inheritedAttributes) :
             base(parent)
         {
@@ -41,8 +39,6 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
             {
                 ErrorManager.MismatchedTypes(context.forHeader(), CcashType.Boolean, ConditionExpression.Type);
             }
-            breakV = context.loopBlock().children.Count == 5;
-
             var childrenAttributes = inheritedAttributes.WithConditionBlock(ConditionBlock).WithNextBlock(NextBlock);
             Statements = context.loopBlock()
                                 .statement()

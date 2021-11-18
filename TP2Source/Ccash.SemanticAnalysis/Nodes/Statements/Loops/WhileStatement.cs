@@ -13,7 +13,6 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
     [SemanticRule("this.AlwaysReturns = false")]
     public class WhileStatement : LoopStatement
     {
-        public bool breakV { get; }
         public WhileStatement(WhileStatementContext context, AbstractScope parent, InheritedAttributes inheritedAttributes) :
             base(parent)
         {
@@ -26,8 +25,6 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
             {
                 ErrorManager.MismatchedTypes(context.whileHeader(), CcashType.Boolean, ConditionExpression.Type);
             }
-            breakV = context.loopBlock().children.Count == 5;
-
             var childrenAttributes = inheritedAttributes.WithConditionBlock(ConditionBlock).WithNextBlock(NextBlock);
             Statements = context.loopBlock()
                                 .statement()

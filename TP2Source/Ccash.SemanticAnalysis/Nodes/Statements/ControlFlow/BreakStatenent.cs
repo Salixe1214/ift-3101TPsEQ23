@@ -13,6 +13,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
 
         public bool AlwaysReturns => true;
 
+        public BlockScope parent { get; }
+
         public BreakStatement()
         {
         }

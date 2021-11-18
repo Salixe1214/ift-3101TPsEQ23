@@ -11,6 +11,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
         public bool AlwaysReturns => false;
 
         public IExpression ConditionExpression { get; protected set; }
+        public int a { get; set; }
 
         public CodeGeneratorAttribute ConditionBlock { get; } = new CodeGeneratorAttribute();
 

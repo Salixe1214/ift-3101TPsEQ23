@@ -112,7 +112,7 @@ reassignment
 
 breakStatement : 'break;';
 
-loopBlock : '{' statement* breakStatement? statement* '}';
+loopBlock : '{' statement* '}';
     
 whileHeader : 'while' expression;
 
