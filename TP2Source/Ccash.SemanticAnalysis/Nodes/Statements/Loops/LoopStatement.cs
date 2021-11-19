@@ -16,6 +16,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
 
         public CodeGeneratorAttribute NextBlock { get; } = new CodeGeneratorAttribute();
 
+        public InheritedAttributes ia { get; set; }
+
         protected LoopStatement(AbstractScope parent) : base(parent)
         {
         }

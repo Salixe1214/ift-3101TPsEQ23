@@ -158,9 +158,6 @@ namespace Ccash.CodeGeneration.LLVMGenerator
 
         private void GenerateBreak(BreakStatement breakStatement, AbstractScope scope)
         {
-            var f = scope.Enclosing<LoopStatement>().First().Statements;
-            Console.WriteLine(f);
-
         }   
 
         private void GenerateVariableDeclaration(VariableDeclaration variableDeclaration, AbstractScope scope)

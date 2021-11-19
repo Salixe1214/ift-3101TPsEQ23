@@ -138,11 +138,13 @@ namespace Ccash.SemanticAnalysis.Types
 
         public override bool Equals(object obj)
         {
+            if ((obj as CcashType).CanBeCoerced(this)) return true;
             return Equals(obj as CcashType);
         }
 
         public static bool operator ==(CcashType left, CcashType right)
         {
+
             return ReferenceEquals(left, right)
                    || !ReferenceEquals(left, null)
                    && !ReferenceEquals(right, null)

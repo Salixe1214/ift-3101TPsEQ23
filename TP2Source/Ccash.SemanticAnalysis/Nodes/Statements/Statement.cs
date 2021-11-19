@@ -101,7 +101,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             }
             if (context.breakStatement() != null)
             {
-                return new BreakStatement(context.breakStatement(), scope);
+                return new BreakStatement(context.breakStatement(), scope, inheritedAttributes);
             }
 
             throw new NotImplementedException($"{context.GetType()} is not yet implemented");

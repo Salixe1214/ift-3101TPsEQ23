@@ -84,11 +84,10 @@ namespace Ccash.SemanticAnalysis
 
                 return overload;
             }
-
             var filteredOverloads = FilterOverloads(overloads, arguments).ToList();
-
             if (!filteredOverloads.Any())
                 throw new NoValidOverloadsException();
+            
 
             var scoredOverloads = filteredOverloads
                                   .Select(overload => (overload, ScoreOverload(overload, arguments)))
@@ -169,6 +168,13 @@ namespace Ccash.SemanticAnalysis
             {
                 var paramType = paramTypes[i];
                 var argument = arguments[i];
+
+                
+                if (paramType.CanBeCoerced(CcashType.Float64))
+                {
+                    return true;
+                }
+
                 
                 if (paramType != argument.Type && !argument.Type.CanBeCoerced(paramType))
                 {

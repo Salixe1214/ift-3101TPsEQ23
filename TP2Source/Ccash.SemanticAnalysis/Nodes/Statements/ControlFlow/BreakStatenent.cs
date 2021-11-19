@@ -15,12 +15,17 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
 
         public BlockScope parent { get; }
 
+        public InheritedAttributes BlockSuivant { get; }
+
         public BreakStatement()
         {
         }
         
-        public BreakStatement(BreakStatementContext context, AbstractScope scope)
+        public BreakStatement(BreakStatementContext context, AbstractScope scope, InheritedAttributes attr)
         {
+            
+            var f = scope.Enclosing<Loops.LoopStatement>().Last().ia;
+            BlockSuivant = attr;
         }
     }
 }

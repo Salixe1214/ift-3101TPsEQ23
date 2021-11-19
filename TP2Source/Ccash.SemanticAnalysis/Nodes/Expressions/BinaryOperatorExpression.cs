@@ -10,6 +10,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Expressions
             var leftOperand = ExpressionFactory.Create(context.expression()[0], scope);
             var rightOperand = ExpressionFactory.Create(context.expression()[1], scope);
 
+
             var operatorString = context.children[1].GetText();
             FunctionName = $"operator{operatorString}";
             Arguments = new[] {leftOperand, rightOperand};
