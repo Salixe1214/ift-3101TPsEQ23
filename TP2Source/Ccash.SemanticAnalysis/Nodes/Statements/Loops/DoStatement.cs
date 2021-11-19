@@ -27,8 +27,6 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
                 ErrorManager.MismatchedTypes(context.whileHeader(), CcashType.Boolean, ConditionExpression.Type);
             }
 
-            /*Block.Data = inheritedAttributes.NextBlock.Data;*/
-
             var childrenAttributes = inheritedAttributes.WithConditionBlock(ConditionBlock).WithNextBlock(NextBlock);
             Statements = context.loopBlock()
                                 .statement()

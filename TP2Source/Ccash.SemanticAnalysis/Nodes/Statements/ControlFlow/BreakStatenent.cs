@@ -15,8 +15,6 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
 
         public BlockScope parent { get; }
 
-        public object f { get; }
-
         public BreakStatement()
         {
         }
