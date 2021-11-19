@@ -16,12 +16,12 @@ func test_do_while() {
 
     printf("\n\nBoucle avec break\n--------\n");
     mut int32 i := 0;
-    do {
+    while i < 5 {
         printf("Allo\n");
         break;
         printf("ads\n");
         i += 1;
-    }while i < 5;
+    }
 
     printf("\n\nBoucle sans break\n--------\n");
     i := 0;

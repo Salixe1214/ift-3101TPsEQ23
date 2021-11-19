@@ -6,14 +6,16 @@ using BreakStatementContext = Ccash.Antlr.CcashParser.BreakStatementContext;
 
 namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
 {
-    [SemanticRule("this.AlwaysReturns = true")]
+    [SemanticRule("this.AlwaysReturns = false")]
     public class BreakStatement : IStatement
     {
         public BreakStatementContext Context { get; }
 
-        public bool AlwaysReturns => true;
+        public bool AlwaysReturns => false;
 
         public BlockScope parent { get; }
+
+        public object f { get; }
 
         public BreakStatement()
         {
@@ -21,7 +23,6 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
         
         public BreakStatement(BreakStatementContext context, AbstractScope scope)
         {
-            Context = context;
         }
     }
 }

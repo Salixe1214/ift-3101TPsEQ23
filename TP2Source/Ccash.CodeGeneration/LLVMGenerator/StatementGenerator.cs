@@ -23,6 +23,8 @@ namespace Ccash.CodeGeneration.LLVMGenerator
 
         private uint _forCounter;
 
+        private uint _breakCounter;
+
         private IRBuilder Builder { get; }
 
         private LLVMValueRef Printf { get; }
@@ -40,6 +42,7 @@ namespace Ccash.CodeGeneration.LLVMGenerator
             _doCounter = 0;
             _forCounter = 0;
             _repeatCounter = 0;
+            _breakCounter = 0;
         }
 
         public void Generate(IStatement statement, AbstractScope scope)
@@ -155,30 +158,13 @@ namespace Ccash.CodeGeneration.LLVMGenerator
 
         private void GenerateBreak(BreakStatement breakStatement, AbstractScope scope)
         {
-            var parent = scope.Enclosing<LoopStatement>().First();
-            LLVMBasicBlockRef nextBlock = (LLVMBasicBlockRef) parent.NextBlock.Data;
-            LLVMBasicBlockRef condBlock = (LLVMBasicBlockRef) parent.ConditionBlock.Data;
-            LLVMBasicBlockRef bodyBlock = (LLVMBasicBlockRef) parent.BodyBlock.Data;
-            Console.WriteLine("NextBlock: ");
-            Console.WriteLine(nextBlock);
-            Console.WriteLine("CondBlock: ");
-            Console.WriteLine(condBlock);
-            Console.WriteLine("bodyBlock: ");
-            Console.WriteLine(bodyBlock);
-
-            Builder.Branch(bodyBlock);
-
-            Builder.PositionAtEnd(condBlock);
-            Builder.Branch(nextBlock);
-
-            Builder.PositionAtEnd(bodyBlock);
-            if (!bodyBlock.HasTerminator())
-            {
-                Builder.Branch(condBlock);
-            }
-
-            Builder.PositionAtEnd(nextBlock);
-        }
+            var x = (WhileStatement) scope.Enclosing<LoopStatement>().First();
+            var z = x.Block[-1].Data;
+            var y = Builder.CurrentBlock.AppendBlock("break");
+            Builder.Branch((LLVMBasicBlockRef)y);
+            Builder.PositionAtEnd((LLVMBasicBlockRef)z);
+            Builder.Branch((LLVMBasicBlockRef)z);
+        }   
 
         private void GenerateVariableDeclaration(VariableDeclaration variableDeclaration, AbstractScope scope)
         {
@@ -232,7 +218,7 @@ namespace Ccash.CodeGeneration.LLVMGenerator
 
             doStatement.ConditionBlock.Data = conditionExpressionBlock;
             doStatement.NextBlock.Data = nextBlock;
-            doStatement.BodyBlock.Data = loopBodyBlock;
+            
 
             Builder.Branch(loopBodyBlock);
 
@@ -252,7 +238,6 @@ namespace Ccash.CodeGeneration.LLVMGenerator
 
             doStatement.ConditionBlock.Data = conditionExpressionBlock;
             doStatement.NextBlock.Data = nextBlock;
-            doStatement.BodyBlock.Data = loopBodyBlock;
         }
 
         private void GenerateFor(ForLoopStatement forLoop)
