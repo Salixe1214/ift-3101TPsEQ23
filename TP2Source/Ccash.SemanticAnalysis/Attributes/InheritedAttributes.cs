@@ -6,6 +6,10 @@
 
         public CodeGeneratorAttribute ConditionBlock { get; private set; } = new CodeGeneratorAttribute();
 
+        public object forLoop { get; set; }
+
+        public string name { get; set; }
+
         public InheritedAttributes WithNextBlock(CodeGeneratorAttribute nextBlock)
         {
             var newAttributes = (InheritedAttributes) MemberwiseClone();

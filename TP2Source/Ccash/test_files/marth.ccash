@@ -7,6 +7,14 @@ func main() int32 {
     printf("Tests continue:\n\n");
     test_continue();
 
+    mut int32 i := 0;
+
+    while i < 3 as troll {
+        i := i + 1;
+        continue;
+        printf("Protip");
+    }
+
     printf("Tests transtypage");
     test_transtypage();
 
@@ -114,9 +122,9 @@ func test_continue() {
     for mut int32 i:=0; i<3; i+=1 {
 		for mut int32 j:=0; j<3; j+=1 {
 			printf("i:= %d j:= %d \n", i, j);
+            continue;
+            test := false;
 		}
-        continue;
-        test := false;
         printf("Hi");
 	}
 

@@ -104,6 +104,8 @@ elseStatement : 'else' block;
 
 returnStatement : 'return' expression? ';';
 
+labelStatement : 'as' Identifier;
+
 reassignment 
     : expression ':=:' expression
     | expression ':=' expression
@@ -111,23 +113,23 @@ reassignment
     | expression ('%='|'&='|'^='|'|=') expression
     | expression ('--' | '++');
 
-breakStatement : 'break;';
+breakStatement : 'break' Identifier? ';';
 
-continueStatement : 'continue;';
+continueStatement : 'continue' Identifier? ';';
 
 loopBlock : '{' statement* '}';
     
-whileHeader : 'while' expression;
+whileHeader : 'while' expression labelStatement?;
 
 whileStatement : whileHeader loopBlock;
 
 doStatement : 'do' loopBlock whileHeader ';';
 
-forHeader : 'for' forInitialization? ';' expression? ';' forUpdate?;
+forHeader : 'for' forInitialization? ';' expression? ';' forUpdate? labelStatement?;
 
 forStatement : forHeader loopBlock; 
 
-repeatHeader : 'repeat' expression;
+repeatHeader : 'repeat' expression labelStatement?;
 
 repeatStatement : repeatHeader loopBlock;
 

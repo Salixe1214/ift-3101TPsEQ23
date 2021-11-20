@@ -170,6 +170,24 @@ namespace Ccash.CodeGeneration.LLVMGenerator
         private void GenerateContinue(ContinueStatement continueStatement, AbstractScope scope)
         {
             var curBlock = Builder.CurrentBlock.AppendBlock("continue");
+            Console.WriteLine(continueStatement.inher.name);
+            try
+            {
+                ForLoopStatement forLoop = scope.Enclosing<ForLoopStatement>().First();
+                if (forLoop != null)
+                {
+                    Generate(forLoop.Assignment, forLoop);
+                }
+            }
+            catch
+            {
+
+            }
+            foreach(LoopStatement i in scope.Enclosing<ForLoopStatement>())
+            {
+                Console.WriteLine("asdasdasdas");
+                Console.WriteLine(i.lName);
+            }
             Builder.Branch((LLVMBasicBlockRef)continueStatement.CondBranch.Data);
             Builder.PositionAtEnd(curBlock);
         }

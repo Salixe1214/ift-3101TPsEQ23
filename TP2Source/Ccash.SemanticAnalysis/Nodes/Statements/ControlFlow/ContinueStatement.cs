@@ -13,6 +13,10 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
 
         public CodeGeneratorAttribute CondBranch { get; } = new CodeGeneratorAttribute();
 
+        public InheritedAttributes inher { get; }
+
+        public string label { get; }
+
         public ContinueStatement()
         {
         }
@@ -20,6 +24,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
         public ContinueStatement(ContinueStatementContext context, AbstractScope scope, InheritedAttributes inheritedAttributes)
         {
             CondBranch = inheritedAttributes.ConditionBlock;
+            inher = inheritedAttributes;
+            label = context.Identifier()?.GetText();
         }
     }
 }

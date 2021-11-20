@@ -51,6 +51,9 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
             }
             inheritedAttributes.NextBlock.Data = NextBlock.Data;
             inheritedAttributes.ConditionBlock.Data = ConditionBlock.Data;
+            inheritedAttributes.name = context.forHeader().labelStatement()?.Identifier().GetText();
+            lName = inheritedAttributes.name;
+
         }
 
         private IStatement CreateStatement(ForInitializationContext context)
