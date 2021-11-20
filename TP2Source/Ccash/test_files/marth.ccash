@@ -1,8 +1,8 @@
 func main() int32 {
     printf("Début des tests\n-----------\n\n");
 
-    //printf("Tests do_while:\n\n");
-    //test_do_while();
+    printf("Tests do_while:\n\n");
+    test_do_while();
 
     //printf("Tests repeat:\n\n");
     //test_repeat();

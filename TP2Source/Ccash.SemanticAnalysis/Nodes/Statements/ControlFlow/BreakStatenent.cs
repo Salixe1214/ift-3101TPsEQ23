@@ -9,23 +9,17 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
     [SemanticRule("this.AlwaysReturns = false")]
     public class BreakStatement : IStatement
     {
-        public BreakStatementContext Context { get; }
-
         public bool AlwaysReturns => false;
 
-        public BlockScope parent { get; }
-
-        public InheritedAttributes BlockSuivant { get; }
+        public CodeGeneratorAttribute NextBranch { get; } = new CodeGeneratorAttribute();
 
         public BreakStatement()
         {
         }
         
-        public BreakStatement(BreakStatementContext context, AbstractScope scope, InheritedAttributes attr)
+        public BreakStatement(BreakStatementContext context, AbstractScope scope, InheritedAttributes inheritedAttributes)
         {
-            
-            var f = scope.Enclosing<Loops.LoopStatement>().Last().ia;
-            BlockSuivant = attr;
+            NextBranch = inheritedAttributes.NextBlock;
         }
     }
 }
