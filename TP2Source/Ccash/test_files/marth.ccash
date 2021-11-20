@@ -7,13 +7,11 @@ func main() int32 {
     printf("Tests continue:\n\n");
     test_continue();
 
-    mut int32 i := 0;
+    printf("Tests continue:\n\n");
+    test_break_label();
 
-    while i < 3 as troll {
-        i := i + 1;
-        continue;
-        printf("Protip");
-    }
+    printf("Tests continue:\n\n");
+    test_continue_label();
 
     printf("Tests transtypage");
     test_transtypage();
@@ -137,6 +135,94 @@ func test_continue() {
 
     printB(test);
     
+}
+
+func test_continue_label() {
+    printf("\nWhile avec continue\n--------\n");
+    mut int32 i := 0;
+    mut int32 j := 0;
+
+    printf("Tests break Label 1:\n\n");
+    i := 0;
+    j := 0;
+    while j < 3 as troll {
+        j := j + 1;
+        printf("ext1\n");
+        while i < 3 as nice {
+            printf("inner\n");
+            break nice;
+            i := i + 1;
+            printf("inner2\n");
+        }
+        i := 0;
+        printf("ext2\n");
+    }
+    printf("Tests break Label 2:\n\n");
+    i := 0;
+    j := 0;
+    while j < 3 as troll {
+        j := j + 1;
+        printf("ext1\n");
+        while i < 3 as nice {
+            printf("inner\n");
+            break troll;
+            i := i + 1;
+            printf("inner2\n");
+        }
+        i := 0;
+        printf("ext2\n");
+    }
+
+    printf("\nFor avec continue\n--------\n");
+    for mut int32 i:=0; i<3; i+=1 as bebe {
+		for mut int32 j:=0; j<3; j+=1 as lala {
+			printf("i:= %d j:= %d \n", i, j);
+            continue bebe;
+		}
+        printf("Hi");
+	}
+    printf("\nFor avec continue\n--------\n");
+    for mut int32 i:=0; i<3; i+=1 as bebe {
+		for mut int32 j:=0; j<3; j+=1 as lala {
+			printf("i:= %d j:= %d \n", i, j);
+            continue lala;
+		}
+        printf("Hi");
+	}
+    
+}
+
+func test_break_label(){
+    printf("Tests break Label 1:\n\n");
+    mut int32 i := 0;
+    mut int32 j := 0;
+    while j < 3 as troll {
+        j := j + 1;
+        printf("ext1\n");
+        while i < 3 as nice {
+            printf("inner\n");
+            break nice;
+            i := i + 1;
+            printf("inner2\n");
+        }
+        i := 0;
+        printf("ext2\n");
+    }
+    printf("Tests break Label 2:\n\n");
+    i := 0;
+    j := 0;
+    while j < 3 as troll {
+        j := j + 1;
+        printf("ext1\n");
+        while i < 3 as nice {
+            printf("inner\n");
+            break troll;
+            i := i + 1;
+            printf("inner2\n");
+        }
+        i := 0;
+        printf("ext2\n");
+    }
 }
 
 func test_break() {

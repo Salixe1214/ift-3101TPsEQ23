@@ -15,7 +15,9 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
 
         public InheritedAttributes inher { get; }
 
-        public string label { get; }
+        public string label { get; } = null;
+
+        public object f { get; }
 
         public ContinueStatement()
         {
@@ -26,6 +28,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
             CondBranch = inheritedAttributes.ConditionBlock;
             inher = inheritedAttributes;
             label = context.Identifier()?.GetText();
+            f = scope.Enclosing<Loops.LoopStatement>();
         }
     }
 }

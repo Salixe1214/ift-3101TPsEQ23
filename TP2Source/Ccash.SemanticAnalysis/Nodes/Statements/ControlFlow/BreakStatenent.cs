@@ -13,6 +13,10 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
 
         public CodeGeneratorAttribute NextBranch { get; } = new CodeGeneratorAttribute();
 
+        public string label { get; } = null;
+
+        public object f { get; }
+
         public BreakStatement()
         {
         }
@@ -20,6 +24,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
         public BreakStatement(BreakStatementContext context, AbstractScope scope, InheritedAttributes inheritedAttributes)
         {
             NextBranch = inheritedAttributes.NextBlock;
+            label = context.Identifier()?.GetText();
+            f = scope.Enclosing<Loops.LoopStatement>();
         }
     }
 }

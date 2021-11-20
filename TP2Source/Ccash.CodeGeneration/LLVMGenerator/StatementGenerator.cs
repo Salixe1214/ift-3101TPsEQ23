@@ -163,32 +163,62 @@ namespace Ccash.CodeGeneration.LLVMGenerator
         private void GenerateBreak(BreakStatement breakStatement, AbstractScope scope)
         {
             var curBlock = Builder.CurrentBlock.AppendBlock("break");
-            Builder.Branch((LLVMBasicBlockRef)breakStatement.NextBranch.Data);
+            if (breakStatement.label != null)
+            {
+                foreach (LoopStatement i in (IEnumerable<LoopStatement>)breakStatement.f)
+                {
+                    if (breakStatement.label == i.lName)
+                    {
+                        Builder.Branch((LLVMBasicBlockRef)i.NextBlock.Data);
+                    }
+                }
+            }
+            else
+                Builder.Branch((LLVMBasicBlockRef)breakStatement.NextBranch.Data);
             Builder.PositionAtEnd(curBlock);
         }
 
         private void GenerateContinue(ContinueStatement continueStatement, AbstractScope scope)
         {
             var curBlock = Builder.CurrentBlock.AppendBlock("continue");
-            Console.WriteLine(continueStatement.inher.name);
-            try
+            if (continueStatement.label != null)
             {
-                ForLoopStatement forLoop = scope.Enclosing<ForLoopStatement>().First();
-                if (forLoop != null)
+                foreach (LoopStatement i in (IEnumerable<LoopStatement>)continueStatement.f)
                 {
-                    Generate(forLoop.Assignment, forLoop);
+                    if (continueStatement.label == i.lName)
+                    {
+                        try
+                        {
+                            ForLoopStatement forLoop = (ForLoopStatement) i;
+                            if (forLoop != null)
+                            {
+                                Generate(forLoop.Assignment, forLoop);
+                            }
+                        }
+                        catch
+                        {
+
+                        }
+                        Builder.Branch((LLVMBasicBlockRef)i.ConditionBlock.Data);
+                    }
                 }
             }
-            catch
+            else
             {
+                try
+                {
+                    ForLoopStatement forLoop = scope.Enclosing<ForLoopStatement>().First();
+                    if (forLoop != null)
+                    {
+                        Generate(forLoop.Assignment, forLoop);
+                    }
+                }
+                catch
+                {
 
+                }
+                Builder.Branch((LLVMBasicBlockRef)continueStatement.CondBranch.Data);
             }
-            foreach(LoopStatement i in scope.Enclosing<ForLoopStatement>())
-            {
-                Console.WriteLine("asdasdasdas");
-                Console.WriteLine(i.lName);
-            }
-            Builder.Branch((LLVMBasicBlockRef)continueStatement.CondBranch.Data);
             Builder.PositionAtEnd(curBlock);
         }
 
