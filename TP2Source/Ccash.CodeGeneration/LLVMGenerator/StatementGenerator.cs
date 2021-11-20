@@ -65,6 +65,10 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                     GenerateBreak(breakStatement, scope);
                     break;
 
+                case ContinueStatement continueStatement:
+                    GenerateContinue(continueStatement, scope);
+                    break;
+
                 case IfStatement ifStatement:
                     GenerateIf(ifStatement);
                     break;
@@ -161,7 +165,14 @@ namespace Ccash.CodeGeneration.LLVMGenerator
             var curBlock = Builder.CurrentBlock.AppendBlock("break");
             Builder.Branch((LLVMBasicBlockRef)breakStatement.NextBranch.Data);
             Builder.PositionAtEnd(curBlock);
-        }   
+        }
+
+        private void GenerateContinue(ContinueStatement continueStatement, AbstractScope scope)
+        {
+            var curBlock = Builder.CurrentBlock.AppendBlock("continue");
+            Builder.Branch((LLVMBasicBlockRef)continueStatement.CondBranch.Data);
+            Builder.PositionAtEnd(curBlock);
+        }
 
         private void GenerateVariableDeclaration(VariableDeclaration variableDeclaration, AbstractScope scope)
         {

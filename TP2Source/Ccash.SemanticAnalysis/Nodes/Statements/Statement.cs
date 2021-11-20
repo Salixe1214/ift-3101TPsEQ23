@@ -103,6 +103,10 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             {
                 return new BreakStatement(context.breakStatement(), scope, inheritedAttributes);
             }
+            if (context.continueStatement() != null)
+            {
+                return new ContinueStatement(context.continueStatement(), scope, inheritedAttributes);
+            }
 
             throw new NotImplementedException($"{context.GetType()} is not yet implemented");
         }

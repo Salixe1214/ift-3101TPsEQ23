@@ -49,6 +49,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.Loops
             {
                 Assignment = CreateStatement(context.forHeader().forUpdate());
             }
+            inheritedAttributes.NextBlock.Data = NextBlock.Data;
+            inheritedAttributes.ConditionBlock.Data = ConditionBlock.Data;
         }
 
         private IStatement CreateStatement(ForInitializationContext context)

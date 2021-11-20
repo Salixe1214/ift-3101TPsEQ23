@@ -91,7 +91,8 @@ statement
     | forStatement                                          # LoopStatement
     | repeatStatement                                       # LoopStatement
     | returnStatement                                       # ControlFlowStatement
-    | breakStatement                                        # ControlFlowStatement;
+    | breakStatement                                        # ControlFlowStatement
+    | continueStatement                                     # ControlFlowStatement;
 
 block : '{' statement* '}';
 
@@ -111,6 +112,8 @@ reassignment
     | expression ('--' | '++');
 
 breakStatement : 'break;';
+
+continueStatement : 'continue;';
 
 loopBlock : '{' statement* '}';
     
