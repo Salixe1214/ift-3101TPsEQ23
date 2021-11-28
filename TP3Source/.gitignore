@@ -1,0 +1,14 @@
+Ccash.sln.*
+
+*/bin/
+*/obj/
+
+Ccash.Antlr/*
+!Ccash.Antlr/Ccash.Antlr.csproj
+!Ccash.Antlr/Ccash.g4
+!Ccash.Antlr/antlr-4.7.2-complete.jar
+
+.idea/
+.vs/
+*.ll
+*.bc
