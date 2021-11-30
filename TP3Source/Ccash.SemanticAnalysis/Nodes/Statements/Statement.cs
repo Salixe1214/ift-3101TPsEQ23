@@ -62,7 +62,11 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             {
                 return new IfStatement(context.ifStatement(), scope, inheritedAttributes);
             }
-            
+            if (context.switchStatement() != null)
+            {
+                return new SwitchStatement(context.switchStatement(), scope, inheritedAttributes);
+            }
+
             throw new NotImplementedException($"{context.GetType()} is not yet implemented");
         }
 

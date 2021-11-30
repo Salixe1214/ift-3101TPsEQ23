@@ -15,6 +15,8 @@ namespace Ccash.CodeGeneration.LLVMGenerator
     {
         private uint _ifCounter;
 
+        private uint _switchCounter;
+
         private uint _whileCounter;
 
         private uint _doCounter;
@@ -43,6 +45,7 @@ namespace Ccash.CodeGeneration.LLVMGenerator
             _forCounter = 0;
             _repeatCounter = 0;
             _breakCounter = 0;
+            _switchCounter = 0;
         }
 
         public void Generate(IStatement statement, AbstractScope scope)
@@ -101,11 +104,6 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                 default:
                     throw new NotImplementedException($"{statement.GetType()} is not yet supported");
             }
-        }
-
-        private void GenerateSwitch(SwitchStatement switchStatement)
-        {
-            throw new NotImplementedException();
         }
 
         private void GenerateMethodCall(MethodCallStatement methodCallStatement, AbstractScope scope)
@@ -380,6 +378,57 @@ namespace Ccash.CodeGeneration.LLVMGenerator
 
             Builder.PositionAtEnd(nextBlock);
 
+        }
+
+        private void GenerateSwitch(SwitchStatement switchStatement)
+        {
+            var originalBlock = Builder.CurrentBlock;
+            var ifId = $"switch{_ifCounter++}";
+            var thenBlock = Builder.CurrentBlock.AppendBlock($"{ifId}Then");
+            var nextBlock = thenBlock.AppendBlock($"{ifId}Next");
+
+            var lastElseIfBlock = nextBlock;
+            if (switchStatement.DefaultStatement != null)
+            {
+                var elseBlock = nextBlock.PrependBlock($"{ifId}Else");
+                Builder.PositionAtEnd(elseBlock);
+                GenerateDefault(switchStatement.DefaultStatement, nextBlock);
+                lastElseIfBlock = elseBlock;
+            }
+
+            Builder.PositionAtEnd(thenBlock);
+            switchStatement.Statements.ForEach(s => Generate(s, switchStatement));
+            if (!Builder.CurrentBlock.HasTerminator())
+            {
+                Builder.Branch(nextBlock);
+            }
+
+            Builder.PositionAtEnd(originalBlock);
+            Builder.Branch(lastElseIfBlock);
+
+            if (switchStatement.AlwaysReturns)
+            {
+                // If we always return then there is never a branch to the next block
+                nextBlock.DeleteBasicBlock();
+            }
+            else
+            {
+                Builder.PositionAtEnd(nextBlock);
+            }
+        }
+
+        private void GenerateDefault(DefaultStatement defaultStatement, LLVMBasicBlockRef nextBlock)
+        {
+            defaultStatement.Statements.ForEach(s => Generate(s, defaultStatement));
+            if (!Builder.CurrentBlock.HasTerminator())
+            {
+                Builder.Branch(nextBlock);
+            }
+        }
+        
+        private void GenerateCases(List<CaseStatement> caseStatements, string switchId, LLVMBasicBlockRef nextBlock, LLVMValueRef expr, SwitchStatement switchStatement)
+        {
+            
         }
 
         private void GenerateIf(IfStatement ifStatement)

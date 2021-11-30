@@ -105,7 +105,7 @@ elseStatement : 'else' block;
 
 caseStatement : 'case' expression block;
 
-defaultStatement : 'default' expression block;
+defaultStatement : 'default' block;
 
 switchStatement : 'fallthrough'? 'switch' expression '{' caseStatement+ defaultStatement? '}';
 

@@ -29,13 +29,13 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
                            InheritedAttributes inheritedAttributes) : base(parent)
         {
             Expression = ExpressionFactory.Create(context.expression(), parent);
-            if (Expression.Type.CanBeCoerced(CcashType.Boolean))
+            if (Expression.Type.CanBeCoerced(CcashType.Int64))
             {
-                Expression = ExpressionFactory.Coerce(Expression, CcashType.Boolean);
+                Expression = ExpressionFactory.Coerce(Expression, CcashType.Int64);
             }
             else
             {
-                ErrorManager.MismatchedTypes(context, CcashType.Boolean, Expression.Type);
+                ErrorManager.MismatchedTypes(context, CcashType.Int64, Expression.Type);
             }
 
             if (context.caseStatement() != null)
@@ -71,7 +71,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
 
         protected CaseStatement(AbstractScope parent) : base(parent)
         {
-            Expression = new BooleanLiteralExpression(true);
+            Expression = new IntegerLiteralExpression(0, CcashType.Int64);
         }
 
         public CaseStatement(CaseStatementContext context, AbstractScope parent, InheritedAttributes inheritedAttributes) :
@@ -80,9 +80,9 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             if (context.expression() != null)
             {
                 Expression = ExpressionFactory.Create(context.expression(), parent);
-                if (!(Expression.Type is BooleanType))
+                if (!(Expression.Type is IntegerType))
                 {
-                    ErrorManager.MismatchedTypes(context, CcashType.Boolean, Expression.Type);
+                    ErrorManager.MismatchedTypes(context, CcashType.Int64, Expression.Type);
                 }
             }
 
