@@ -76,6 +76,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
         public IExpression Expression { get; }
 
         public CodeGeneratorAttribute NextBlock { get; } = new CodeGeneratorAttribute();
+        public string lName { get; set; } = "";
 
         protected CaseStatement(AbstractScope parent) : base(parent)
         {
@@ -103,6 +104,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             }
 
             inheritedAttributes.NextBlock.Data = NextBlock.Data;
+            inheritedAttributes.name = "hi";
+            lName = inheritedAttributes.name;
 
             Statements = context.block()
                                 .statement()

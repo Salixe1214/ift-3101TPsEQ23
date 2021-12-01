@@ -15,6 +15,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
 
         public object f { get; }
 
+        public string label { get; } = null;
+
         public FallthroughStatement()
         {
         }
@@ -22,6 +24,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
         public FallthroughStatement(FallthroughStatementContext context, AbstractScope scope, InheritedAttributes inheritedAttributes)
         {
             NextBranch.Data = inheritedAttributes.NextBlock.Data;
+            label = context.GetText();
             f = scope.Enclosing<CaseStatement>();
         }
     }

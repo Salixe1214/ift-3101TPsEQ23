@@ -174,14 +174,19 @@ namespace Ccash.CodeGeneration.LLVMGenerator
         private void GenerateFallthrough(FallthroughStatement fallthroughStatement, AbstractScope scope)
         {
             var curBlock = Builder.CurrentBlock.AppendBlock("fallthrough");
+            CaseStatement cstmnt = ((IEnumerable<CaseStatement>)fallthroughStatement.f).First<CaseStatement>();
             Console.WriteLine(fallthroughStatement.NextBranch.Data != null);
-            //Builder.Branch((LLVMBasicBlockRef)fallthroughStatement.NextBranch.Data);
-            //Builder.PositionAtEnd(curBlock);
+            Console.WriteLine(fallthroughStatement.label);
+            Console.WriteLine(cstmnt.lName);
+            Console.WriteLine(cstmnt.NextBlock.Data);
+            Builder.Branch((LLVMBasicBlockRef)cstmnt.NextBlock.Data);
+            Builder.PositionAtEnd(curBlock);
         }
 
         private void GenerateBreak(BreakStatement breakStatement, AbstractScope scope)
         {
             var curBlock = Builder.CurrentBlock.AppendBlock("break");
+
             if (breakStatement.label != null)
             {
                 foreach (LoopStatement i in (IEnumerable<LoopStatement>)breakStatement.f)
@@ -441,6 +446,7 @@ namespace Ccash.CodeGeneration.LLVMGenerator
         
         private LLVMBasicBlockRef GenerateCases(List<CaseStatement> caseStatements, string switchId, LLVMBasicBlockRef nextBlock, LLVMValueRef expr, SwitchStatement switchStatement)
         {
+            var prevBlock = nextBlock;
             var nextElseIfBlock = nextBlock;
             LLVMBasicBlockRef r = nextBlock;
             for (var i = caseStatements.Count - 1; i >= 0; i--)
@@ -450,10 +456,12 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                 var elseIfThenBlock = elseIfBlock.AppendBlock($"{elseIfId}Then");
 
                 var elseIfStatement = caseStatements[i];
+                
 
                 r = elseIfBlock;
 
-                //elseIfStatement.NextBlock.Data = elseIfThenBlock;
+                elseIfStatement.NextBlock.Data = prevBlock;
+                prevBlock = elseIfThenBlock;
 
                 Builder.PositionAtEnd(elseIfBlock);
                 LLVMValueRef a = Builder.Expression(elseIfStatement.Expression, switchStatement);
