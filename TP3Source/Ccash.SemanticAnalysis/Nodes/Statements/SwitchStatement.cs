@@ -18,6 +18,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
     {
         public bool AlwaysReturns { get; }
 
+        public bool defaultCase { get; set; } = true;
+
         public IExpression Expression { get; }
 
         public List<CaseStatement> CaseStatements { get; } = new List<CaseStatement>();

@@ -23,7 +23,25 @@ func main() int32 {
 }
 
 func test_switch(){
-    printf("Debut\n");
+
+    printf("Debut 0:\n");
+    switch 0 {
+        case 0 {
+            printf("0");
+        }
+        case 1 {
+            printf("1");
+        }                                           
+        case 2 {
+            printf("2");
+        }
+        default {
+            printf("Default");
+        }
+    }
+    printf("\nFin 0\n");
+
+    printf("Debut 1\n");
     switch 1 {
         case 0 {
             printf("0");
@@ -38,8 +56,42 @@ func test_switch(){
             printf("Default");
         }
     }
+    printf("\nFin 1\n");
+
+    printf("Debut 2\n");
+    switch 2 {
+        case 0 {
+            printf("0");
+        }
+        case 1 {
+            printf("1");
+        }                                           
+        case 2 {
+            printf("2");
+        }
+        default {
+            printf("Default");
+        }
+    }
+    printf("\nFin 2\n");
+
+    printf("Debut 3\n");
+    switch 3 {
+        case 0 {
+            printf("0");
+        }
+        case 1 {
+            printf("1");
+        }                                           
+        case 2 {
+            printf("2");
+        }
+        default {
+            printf("Default");
+        }
+    }
     
-    printf("\nFin\n");
+    printf("\nFin 3\n");
 
 }
 

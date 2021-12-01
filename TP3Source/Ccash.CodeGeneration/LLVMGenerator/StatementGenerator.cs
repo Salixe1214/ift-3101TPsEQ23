@@ -383,17 +383,18 @@ namespace Ccash.CodeGeneration.LLVMGenerator
         private void GenerateSwitch(SwitchStatement switchStatement)
         {
             var originalBlock = Builder.CurrentBlock;
-            var ifId = $"switch{_ifCounter++}";
-            var thenBlock = Builder.CurrentBlock.AppendBlock($"{ifId}Then");
-            var nextBlock = thenBlock.AppendBlock($"{ifId}Next");
+            var switchId = $"switch{_ifCounter++}";
+            var thenBlock = Builder.CurrentBlock.AppendBlock($"{switchId}Then");
+            var nextBlock = thenBlock.AppendBlock($"{switchId}Next");
 
-            var lastElseIfBlock = nextBlock;
-            if (switchStatement.DefaultStatement != null)
+            LLVMValueRef expr = Builder.Expression(switchStatement.Expression, switchStatement.Parent);
+            LLVMBasicBlockRef lastBlock = GenerateCases(switchStatement.CaseStatements, switchId, nextBlock, expr, switchStatement);
+            if (switchStatement.defaultCase)
             {
-                var elseBlock = nextBlock.PrependBlock($"{ifId}Else");
-                Builder.PositionAtEnd(elseBlock);
+                var defaultBlock = nextBlock.PrependBlock($"{switchId}Default");
+                Builder.PositionAtEnd(defaultBlock);
                 GenerateDefault(switchStatement.DefaultStatement, nextBlock);
-                lastElseIfBlock = elseBlock;
+                lastBlock = defaultBlock;
             }
 
             Builder.PositionAtEnd(thenBlock);
@@ -404,7 +405,7 @@ namespace Ccash.CodeGeneration.LLVMGenerator
             }
 
             Builder.PositionAtEnd(originalBlock);
-            Builder.Branch(lastElseIfBlock);
+            Builder.Branch(lastBlock);
 
             if (switchStatement.AlwaysReturns)
             {
@@ -426,9 +427,36 @@ namespace Ccash.CodeGeneration.LLVMGenerator
             }
         }
         
-        private void GenerateCases(List<CaseStatement> caseStatements, string switchId, LLVMBasicBlockRef nextBlock, LLVMValueRef expr, SwitchStatement switchStatement)
+        private LLVMBasicBlockRef GenerateCases(List<CaseStatement> caseStatements, string switchId, LLVMBasicBlockRef nextBlock, LLVMValueRef expr, SwitchStatement switchStatement)
         {
-            
+            var nextElseIfBlock = nextBlock;
+            LLVMBasicBlockRef r = nextBlock;
+            for (var i = caseStatements.Count - 1; i >= 0; i--)
+            {
+                var elseIfId = $"{switchId}ElseIf{i}";
+                var elseIfBlock = nextElseIfBlock.PrependBlock($"{elseIfId}");
+                var elseIfThenBlock = elseIfBlock.AppendBlock($"{elseIfId}Then");
+
+                var elseIfStatement = caseStatements[i];
+
+                r = elseIfBlock;
+
+                Builder.PositionAtEnd(elseIfBlock);
+                LLVMValueRef a = Builder.Expression(elseIfStatement.Expression, switchStatement);
+                LLVMValueRef elseIfCondition = Builder.EQ(a, expr);
+                Console.WriteLine(elseIfCondition);
+                Builder.ConditionalBranch(elseIfCondition, elseIfThenBlock, nextElseIfBlock);
+
+                Builder.PositionAtEnd(elseIfThenBlock);
+                elseIfStatement.Statements.ForEach(s => Generate(s, elseIfStatement));
+                if (!Builder.CurrentBlock.HasTerminator())
+                {
+                    Builder.Branch(nextBlock);
+                }
+
+                nextElseIfBlock = elseIfBlock;
+            }
+            return r;
         }
 
         private void GenerateIf(IfStatement ifStatement)
