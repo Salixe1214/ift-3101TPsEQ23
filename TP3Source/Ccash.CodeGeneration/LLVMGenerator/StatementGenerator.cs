@@ -444,7 +444,8 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                 Builder.PositionAtEnd(elseIfBlock);
                 LLVMValueRef a = Builder.Expression(elseIfStatement.Expression, switchStatement);
                 LLVMValueRef elseIfCondition = Builder.EQ(a, expr);
-                Console.WriteLine(elseIfCondition);
+                if (elseIfCondition.ConstIntGetSExtValue() != 0)
+                    switchStatement.defaultCase = false;
                 Builder.ConditionalBranch(elseIfCondition, elseIfThenBlock, nextElseIfBlock);
 
                 Builder.PositionAtEnd(elseIfThenBlock);
