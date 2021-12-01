@@ -35,6 +35,10 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             {
                 Expression = ExpressionFactory.Coerce(Expression, CcashType.Int64);
             }
+            else if(Expression.Type.CanBeCoerced(CcashType.Boolean))
+            {
+                Expression = ExpressionFactory.Coerce(Expression, CcashType.Boolean);
+            }
             else
             {
                 ErrorManager.MismatchedTypes(context, CcashType.Int64, Expression.Type);
@@ -71,6 +75,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
 
         public IExpression Expression { get; }
 
+        public CodeGeneratorAttribute NextBlock { get; } = new CodeGeneratorAttribute();
+
         protected CaseStatement(AbstractScope parent) : base(parent)
         {
             Expression = new IntegerLiteralExpression(0, CcashType.Int64);
@@ -82,11 +88,21 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             if (context.expression() != null)
             {
                 Expression = ExpressionFactory.Create(context.expression(), parent);
-                if (!(Expression.Type is IntegerType))
+                if (Expression.Type.CanBeCoerced(CcashType.Int64))
+                {
+                    Expression = ExpressionFactory.Coerce(Expression, CcashType.Int64);
+                }
+                else if (Expression.Type.CanBeCoerced(CcashType.Boolean))
+                {
+                    Expression = ExpressionFactory.Coerce(Expression, CcashType.Boolean);
+                }
+                else
                 {
                     ErrorManager.MismatchedTypes(context, CcashType.Int64, Expression.Type);
                 }
             }
+
+            inheritedAttributes.NextBlock.Data = NextBlock.Data;
 
             Statements = context.block()
                                 .statement()

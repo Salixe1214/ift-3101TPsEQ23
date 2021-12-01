@@ -107,6 +107,10 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             {
                 return new BreakStatement(context.breakStatement(), scope, inheritedAttributes);
             }
+            if (context.fallthroughStatement() != null)
+            {
+                return new FallthroughStatement(context.fallthroughStatement(), scope, inheritedAttributes);
+            }
             if (context.continueStatement() != null)
             {
                 return new ContinueStatement(context.continueStatement(), scope, inheritedAttributes);

@@ -93,6 +93,7 @@ statement
     | repeatStatement                                       # LoopStatement
     | returnStatement                                       # ControlFlowStatement
     | breakStatement                                        # ControlFlowStatement
+    | fallthroughStatement                                  # ControlFlowStatement
     | continueStatement                                     # ControlFlowStatement;
 
 block : '{' statement* '}';
@@ -121,6 +122,8 @@ reassignment
     | expression ('--' | '++');
 
 breakStatement : 'break' Identifier? ';';
+
+fallthroughStatement : 'fallthrough;';
 
 continueStatement : 'continue' Identifier? ';';
 

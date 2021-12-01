@@ -68,6 +68,10 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                     GenerateBreak(breakStatement, scope);
                     break;
 
+                case FallthroughStatement fallthroughStatement:
+                    GenerateFallthrough(fallthroughStatement, scope);
+                    break;
+
                 case ContinueStatement continueStatement:
                     GenerateContinue(continueStatement, scope);
                     break;
@@ -165,6 +169,14 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                 LLVMValueRef expression = Builder.Expression(returnStatement.Expression, scope);
                 Builder.Return(expression);
             }
+        }
+
+        private void GenerateFallthrough(FallthroughStatement fallthroughStatement, AbstractScope scope)
+        {
+            var curBlock = Builder.CurrentBlock.AppendBlock("fallthrough");
+            Console.WriteLine(fallthroughStatement.NextBranch.Data != null);
+            //Builder.Branch((LLVMBasicBlockRef)fallthroughStatement.NextBranch.Data);
+            //Builder.PositionAtEnd(curBlock);
         }
 
         private void GenerateBreak(BreakStatement breakStatement, AbstractScope scope)
@@ -440,6 +452,8 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                 var elseIfStatement = caseStatements[i];
 
                 r = elseIfBlock;
+
+                //elseIfStatement.NextBlock.Data = elseIfThenBlock;
 
                 Builder.PositionAtEnd(elseIfBlock);
                 LLVMValueRef a = Builder.Expression(elseIfStatement.Expression, switchStatement);
