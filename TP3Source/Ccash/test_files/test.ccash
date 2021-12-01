@@ -24,6 +24,50 @@ func main() int32 {
 
 func test_switch(){
 
+    const int32 a := 1;
+    const int32 b := 3;
+    switch a+1 {
+        case 1 {
+            print_string("on ne devrait pas voir ce message\t(switch)");
+        }
+        case 2 {
+            print_string("le premier message\t\t\t(switch)");
+            const bool test := false;
+            switch test {
+                case true { print_string("on ne devrait pas voir ce message\t(switch)"); }
+                case false { print_string("le second message\t\t\t(switch)"); }
+            }
+            //fallthrough;
+        }
+        case 3 {
+            if b > 0 {
+                print_string("le troisieme message\t\t\t(switch)");
+            }
+        }
+        case 4 {
+            print_string("on ne devrait pas voir ce message\t(switch)");
+        }
+        default {
+            print_string("on ne devrait pas voir ce message\t(switch)");
+        }
+    }
+    
+    fallthrough switch a+1 {
+        case 1 {
+            print_string("on ne devrait pas voir ce message\t(falltrough switch)");
+        }
+        case 2 {
+            print_string("le premier message\t\t\t(falltrough switch)");
+        }
+        case 3 {
+            print_string("le second message\t\t\t(falltrough switch)");
+            break;
+        }
+        case 4 {
+            print_string("on ne devrait pas voir ce message\t(switch)");
+        }
+    }
+
     printf("Debut 0:\n");
     switch 0 {
         case 0 {
@@ -42,7 +86,7 @@ func test_switch(){
     printf("\nFin 0\n");
 
     printf("Debut 1\n");
-    switch 1 {
+    fallthrough switch 1 {
         case 0 {
             printf("0");
         }
