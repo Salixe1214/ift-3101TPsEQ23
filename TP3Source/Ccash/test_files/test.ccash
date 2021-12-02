@@ -43,7 +43,6 @@ func test_switch(){
             if b > 0 {
                 print_string("le troisieme message\t\t\t(switch)");
             }
-            fallthrough;
         }
         case 4 {
             print_string("on ne devrait pas voir ce message\t(switch)");

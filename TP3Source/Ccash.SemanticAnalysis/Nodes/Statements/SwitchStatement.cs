@@ -20,7 +20,11 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
 
         public bool defaultCase { get; set; } = true;
 
+        public bool FallthroughBool { get; } = false;
+
         public IExpression Expression { get; }
+
+        public CodeGeneratorAttribute NextBlock { get; set; } = new CodeGeneratorAttribute();
 
         public List<CaseStatement> CaseStatements { get; } = new List<CaseStatement>();
 
@@ -56,11 +60,17 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
                 DefaultStatement = new DefaultStatement(context.defaultStatement(), parent, inheritedAttributes);
             }
 
+            inheritedAttributes.NextBlock.Data = NextBlock.Data;
+
             AlwaysReturns = Statements.Any(s => s.AlwaysReturns);
             if (AlwaysReturns && Statements.First(s => s.AlwaysReturns) != Statements.Last())
             {
                 ErrorManager.AddError(context, "Unreachable code after return");
             }
+
+            FallthroughBool = context.children.First().GetText() == "fallthrough";
+            
+            var childrenAttributes = inheritedAttributes.WithNextBlock(NextBlock);
 
             AlwaysReturns &= (DefaultStatement?.AlwaysReturns ?? false)
                              && CaseStatements.All(s => s.AlwaysReturns);
@@ -75,7 +85,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
 
         public IExpression Expression { get; }
 
-        public CodeGeneratorAttribute NextBlock { get; } = new CodeGeneratorAttribute();
+        public CodeGeneratorAttribute NextBlock { get; set; } = new CodeGeneratorAttribute();
+        
         public string lName { get; set; } = "";
 
         protected CaseStatement(AbstractScope parent) : base(parent)

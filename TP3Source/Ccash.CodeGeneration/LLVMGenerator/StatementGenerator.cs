@@ -175,10 +175,7 @@ namespace Ccash.CodeGeneration.LLVMGenerator
         {
             var curBlock = Builder.CurrentBlock.AppendBlock("fallthrough");
             CaseStatement cstmnt = ((IEnumerable<CaseStatement>)fallthroughStatement.f).First<CaseStatement>();
-            Console.WriteLine(fallthroughStatement.NextBranch.Data != null);
-            Console.WriteLine(fallthroughStatement.label);
-            Console.WriteLine(cstmnt.lName);
-            Console.WriteLine(cstmnt.NextBlock.Data);
+            
             Builder.Branch((LLVMBasicBlockRef)cstmnt.NextBlock.Data);
             Builder.PositionAtEnd(curBlock);
         }
@@ -187,6 +184,9 @@ namespace Ccash.CodeGeneration.LLVMGenerator
         {
             var curBlock = Builder.CurrentBlock.AppendBlock("break");
 
+            Console.WriteLine("\n\n\n");
+            Console.WriteLine("hi");
+            Console.WriteLine("\n\n\n");
             if (breakStatement.label != null)
             {
                 foreach (LoopStatement i in (IEnumerable<LoopStatement>)breakStatement.f)
@@ -433,6 +433,8 @@ namespace Ccash.CodeGeneration.LLVMGenerator
             {
                 Builder.PositionAtEnd(nextBlock);
             }
+
+            switchStatement.NextBlock.Data = nextBlock;
         }
 
         private void GenerateDefault(DefaultStatement defaultStatement, LLVMBasicBlockRef nextBlock)
@@ -461,7 +463,7 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                 r = elseIfBlock;
 
                 elseIfStatement.NextBlock.Data = prevBlock;
-                prevBlock = elseIfThenBlock;
+                
 
                 Builder.PositionAtEnd(elseIfBlock);
                 LLVMValueRef a = Builder.Expression(elseIfStatement.Expression, switchStatement);
@@ -474,9 +476,13 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                 elseIfStatement.Statements.ForEach(s => Generate(s, elseIfStatement));
                 if (!Builder.CurrentBlock.HasTerminator())
                 {
-                    Builder.Branch(nextBlock);
+                    if (switchStatement.FallthroughBool)
+                        Builder.Branch(prevBlock);
+                    else
+                        Builder.Branch(nextBlock);
                 }
 
+                prevBlock = elseIfThenBlock;
                 nextElseIfBlock = elseIfBlock;
             }
             return r;
