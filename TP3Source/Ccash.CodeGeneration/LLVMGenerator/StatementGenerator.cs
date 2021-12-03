@@ -175,8 +175,7 @@ namespace Ccash.CodeGeneration.LLVMGenerator
         {
             var curBlock = Builder.CurrentBlock.AppendBlock("fallthrough");
             CaseStatement cstmnt = ((IEnumerable<CaseStatement>)fallthroughStatement.f).First<CaseStatement>();
-            
-            Builder.Branch((LLVMBasicBlockRef)cstmnt.NextBlock.Data);
+            Builder.Branch((LLVMBasicBlockRef)cstmnt.NextCase.Data);
             Builder.PositionAtEnd(curBlock);
         }
 
@@ -184,9 +183,6 @@ namespace Ccash.CodeGeneration.LLVMGenerator
         {
             var curBlock = Builder.CurrentBlock.AppendBlock("break");
 
-            Console.WriteLine("\n\n\n");
-            Console.WriteLine("hi");
-            Console.WriteLine("\n\n\n");
             if (breakStatement.label != null)
             {
                 foreach (LoopStatement i in (IEnumerable<LoopStatement>)breakStatement.f)
@@ -451,6 +447,7 @@ namespace Ccash.CodeGeneration.LLVMGenerator
             var prevBlock = nextBlock;
             var nextElseIfBlock = nextBlock;
             LLVMBasicBlockRef r = nextBlock;
+            List<LLVMValueRef> listExp = new List<LLVMValueRef>();
             for (var i = caseStatements.Count - 1; i >= 0; i--)
             {
                 var elseIfId = $"{switchId}ElseIf{i}";
@@ -462,11 +459,15 @@ namespace Ccash.CodeGeneration.LLVMGenerator
 
                 r = elseIfBlock;
 
-                elseIfStatement.NextBlock.Data = prevBlock;
+                elseIfStatement.NextBlock.Data = nextElseIfBlock;
+                elseIfStatement.NextCase.Data = prevBlock;
                 
 
                 Builder.PositionAtEnd(elseIfBlock);
                 LLVMValueRef a = Builder.Expression(elseIfStatement.Expression, switchStatement);
+                if (listExp.Contains(a))
+                    throw new Exception("Logic error!\nTwo cases cannot have the same value!");
+                listExp.Add(a);
                 LLVMValueRef elseIfCondition = Builder.EQ(a, expr);
                 if (elseIfCondition.ConstIntGetSExtValue() != 0)
                     switchStatement.defaultCase = false;

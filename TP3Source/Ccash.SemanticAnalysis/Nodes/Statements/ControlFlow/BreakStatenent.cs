@@ -15,6 +15,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
 
         public string label { get; } = null;
 
+        public InheritedAttributes attr { get; }
+
         public object f { get; }
 
         public BreakStatement()
@@ -26,6 +28,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements.ControlFlow
             NextBranch = inheritedAttributes.NextBlock;
             label = context.Identifier()?.GetText();
             f = scope.Enclosing<Loops.LoopStatement>();
+            attr = inheritedAttributes;
         }
     }
 }

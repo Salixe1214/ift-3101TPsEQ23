@@ -41,7 +41,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             }
             else if(Expression.Type.CanBeCoerced(CcashType.Boolean))
             {
-                Expression = ExpressionFactory.Coerce(Expression, CcashType.Boolean);
+                Expression = ExpressionFactory.Coerce(Expression, CcashType.Int64);
             }
             else
             {
@@ -86,8 +86,8 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
         public IExpression Expression { get; }
 
         public CodeGeneratorAttribute NextBlock { get; set; } = new CodeGeneratorAttribute();
-        
-        public string lName { get; set; } = "";
+
+        public CodeGeneratorAttribute NextCase { get; set; } = new CodeGeneratorAttribute();
 
         protected CaseStatement(AbstractScope parent) : base(parent)
         {
@@ -106,7 +106,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
                 }
                 else if (Expression.Type.CanBeCoerced(CcashType.Boolean))
                 {
-                    Expression = ExpressionFactory.Coerce(Expression, CcashType.Boolean);
+                    Expression = ExpressionFactory.Coerce(Expression, CcashType.Int64);
                 }
                 else
                 {
@@ -115,12 +115,11 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             }
 
             inheritedAttributes.NextBlock.Data = NextBlock.Data;
-            inheritedAttributes.name = "hi";
-            lName = inheritedAttributes.name;
+            var childrenAttributes = inheritedAttributes.WithNextBlock(NextBlock);
 
             Statements = context.block()
                                 .statement()
-                                ?.Select(s => StatementFactory.Create(s, this, inheritedAttributes))
+                                ?.Select(s => StatementFactory.Create(s, this, childrenAttributes))
                                 .ToList();
 
             AlwaysReturns = Statements.Any(s => s.AlwaysReturns);

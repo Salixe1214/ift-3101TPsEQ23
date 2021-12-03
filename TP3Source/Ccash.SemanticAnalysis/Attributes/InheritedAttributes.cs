@@ -23,5 +23,12 @@
             newAttributes.ConditionBlock = conditionBlock;
             return newAttributes;
         }
+
+        public InheritedAttributes WithName(string pName)
+        {
+            var newAttributes = (InheritedAttributes)MemberwiseClone();
+            newAttributes.name = pName;
+            return newAttributes;
+        }
     }
 }
