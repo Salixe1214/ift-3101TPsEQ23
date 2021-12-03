@@ -445,36 +445,40 @@ namespace Ccash.CodeGeneration.LLVMGenerator
         private LLVMBasicBlockRef GenerateCases(List<CaseStatement> caseStatements, string switchId, LLVMBasicBlockRef nextBlock, LLVMValueRef expr, SwitchStatement switchStatement)
         {
             var prevBlock = nextBlock;
-            var nextElseIfBlock = nextBlock;
-            LLVMBasicBlockRef r = nextBlock;
+            var nextCaseBlock = nextBlock;
+            LLVMBasicBlockRef lastNextBlock = nextBlock;
             List<LLVMValueRef> listExp = new List<LLVMValueRef>();
+            
             for (var i = caseStatements.Count - 1; i >= 0; i--)
             {
-                var elseIfId = $"{switchId}ElseIf{i}";
-                var elseIfBlock = nextElseIfBlock.PrependBlock($"{elseIfId}");
-                var elseIfThenBlock = elseIfBlock.AppendBlock($"{elseIfId}Then");
+                var cases = $"{switchId}Case{i}";
+                var caseBlock = nextCaseBlock.PrependBlock($"{cases}");
+                var codeBlock = caseBlock.AppendBlock($"{cases}Case");
 
-                var elseIfStatement = caseStatements[i];
+                var caseStatement = caseStatements[i];
+
+
+                lastNextBlock = caseBlock;
+
+                caseStatement.NextBlock.Data = nextCaseBlock;
+                caseStatement.NextCase.Data = prevBlock;
                 
 
-                r = elseIfBlock;
-
-                elseIfStatement.NextBlock.Data = nextElseIfBlock;
-                elseIfStatement.NextCase.Data = prevBlock;
+                Builder.PositionAtEnd(caseBlock);
                 
-
-                Builder.PositionAtEnd(elseIfBlock);
-                LLVMValueRef a = Builder.Expression(elseIfStatement.Expression, switchStatement);
-                if (listExp.Contains(a))
+                LLVMValueRef expressionValue = Builder.Expression(caseStatement.Expression, switchStatement);
+                
+                if (listExp.Contains(expressionValue))
                     throw new Exception("Logic error!\nTwo cases cannot have the same value!");
-                listExp.Add(a);
-                LLVMValueRef elseIfCondition = Builder.EQ(a, expr);
-                if (elseIfCondition.ConstIntGetSExtValue() != 0)
+                listExp.Add(expressionValue);
+                
+                LLVMValueRef caseCondition = Builder.EQ(expressionValue, expr);
+                if (caseCondition.ConstIntGetSExtValue() != 0)
                     switchStatement.defaultCase = false;
-                Builder.ConditionalBranch(elseIfCondition, elseIfThenBlock, nextElseIfBlock);
+                Builder.ConditionalBranch(caseCondition, codeBlock, nextCaseBlock);
 
-                Builder.PositionAtEnd(elseIfThenBlock);
-                elseIfStatement.Statements.ForEach(s => Generate(s, elseIfStatement));
+                Builder.PositionAtEnd(codeBlock);
+                caseStatement.Statements.ForEach(s => Generate(s, caseStatement));
                 if (!Builder.CurrentBlock.HasTerminator())
                 {
                     if (switchStatement.FallthroughBool)
@@ -483,10 +487,10 @@ namespace Ccash.CodeGeneration.LLVMGenerator
                         Builder.Branch(nextBlock);
                 }
 
-                prevBlock = elseIfThenBlock;
-                nextElseIfBlock = elseIfBlock;
+                prevBlock = codeBlock;
+                nextCaseBlock = caseBlock;
             }
-            return r;
+            return lastNextBlock;
         }
 
         private void GenerateIf(IfStatement ifStatement)

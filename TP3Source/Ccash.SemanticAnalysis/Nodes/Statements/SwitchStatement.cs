@@ -35,11 +35,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
                            InheritedAttributes inheritedAttributes) : base(parent)
         {
             Expression = ExpressionFactory.Create(context.expression(), parent);
-            if (Expression.Type.CanBeCoerced(CcashType.Int64))
-            {
-                Expression = ExpressionFactory.Coerce(Expression, CcashType.Int64);
-            }
-            else if(Expression.Type.CanBeCoerced(CcashType.Boolean))
+            if (Expression.Type.CanBeCoerced(CcashType.Int64) || Expression.Type.CanBeCoerced(CcashType.Boolean))
             {
                 Expression = ExpressionFactory.Coerce(Expression, CcashType.Int64);
             }
@@ -100,11 +96,7 @@ namespace Ccash.SemanticAnalysis.Nodes.Statements
             if (context.expression() != null)
             {
                 Expression = ExpressionFactory.Create(context.expression(), parent);
-                if (Expression.Type.CanBeCoerced(CcashType.Int64))
-                {
-                    Expression = ExpressionFactory.Coerce(Expression, CcashType.Int64);
-                }
-                else if (Expression.Type.CanBeCoerced(CcashType.Boolean))
+                if (Expression.Type.CanBeCoerced(CcashType.Int64) || Expression.Type.CanBeCoerced(CcashType.Boolean))
                 {
                     Expression = ExpressionFactory.Coerce(Expression, CcashType.Int64);
                 }
